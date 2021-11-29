@@ -33,14 +33,14 @@ router.post("/GetStdList", midway.checkToken, (req, res, next) => {
         })
     }
     else {
-        db.executeSql("select distinct(stdid) from subrightstoteacher where teacherid=" + req.body.teachid+" ORDER BY stdid", function (data, err) {
+        db.executeSql("select distinct(stdid) from subrightstoteacher where teacherid=" + req.body.teachid + " ORDER BY stdid", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
                 // console.log(data);
                 let std = [];
                 for (let i = 0; i < data.length; i++) {
-                    db.executeSql("select * from stdlist where id=" + data[i].stdid+" ORDER BY createddate desc", function (data1, err) {
+                    db.executeSql("select * from stdlist where id=" + data[i].stdid + " ORDER BY createddate desc", function (data1, err) {
                         if (err) {
                             console.log(err)
                         }
@@ -48,7 +48,7 @@ router.post("/GetStdList", midway.checkToken, (req, res, next) => {
                             // console.log(data1);
                             std.push(data1[0]);
                             if (std.length == data.length) {
-                                console.log("ppppppppppp",std);
+                                console.log("ppppppppppp", std);
                                 res.json(std);
                             }
                         }
@@ -73,30 +73,30 @@ router.get("/RemoveStandardList/:id", midway.checkToken, (req, res, next) => {
 router.post("/saveSubject", midway.checkToken, (req, res, next) => {
     // console.log(req.body);
     for (let i = 0; i < req.body.length; i++) {
-        db.executeSql("select * from subjectlist where stdid="+req.body[i].id+" and subject='"+req.body[i].subject+"'", function(data,err){
-            if(err){
+        db.executeSql("select * from subjectlist where stdid=" + req.body[i].id + " and subject='" + req.body[i].subject + "'", function (data, err) {
+            if (err) {
                 console.log(err);
             }
-            else{
-                if(data.length ==0){
+            else {
+                if (data.length == 0) {
                     db.executeSql("INSERT INTO  `subjectlist`(`stdid`,`subject`,`isactive`)VALUES(" + req.body[i].id + ",'" + req.body[i].subject + "',true);", function (data, err) {
                         if (err) {
                             console.log(err);
-            
+
                         } else {
                             res.json("success");
                         }
                     });
                 }
-                else{
+                else {
                     res.json("duplicate");
                 }
             }
         })
 
-        
+
     }
-   
+
 });
 
 router.post("/GetSubjectList", midway.checkToken, (req, res, next) => {
@@ -263,6 +263,17 @@ router.post("/getAllQueList", midway.checkToken, (req, res, next) => {
         }
     });
 });
+
+router.post("/GetProfileDetails", midway.checkToken, (req, res, next) => {
+    db.executeSql("select * from admin where id=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.post("/getQueOptionList", midway.checkToken, (req, res, next) => {
     db.executeSql("select * from optionsvalue where queid=" + req.body.queid + ";", function (data1, err) {
         if (err) {
@@ -288,7 +299,7 @@ router.post("/SaveTest", midway.checkToken, (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            console.log("inserted data in test",data);
+            console.log("inserted data in test", data);
             for (let i = 0; i < req.body.questionlist.length; i++) {
                 db.executeSql("INSERT INTO `testquelist`(`testid`, `queid`) VALUES (" + data.insertId + "," + req.body.questionlist[i].id + ")", function (data, err) {
                     if (err) {
@@ -362,7 +373,7 @@ router.post("/GetStudentList", midway.checkToken, (req, res, next) => {
 })
 
 router.post("/GetTestList", midway.checkToken, (req, res, next) => {
-    console.log("subidididi",req.body)
+    console.log("subidididi", req.body)
     db.executeSql("select * from testlist where subjectId=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -373,7 +384,7 @@ router.post("/GetTestList", midway.checkToken, (req, res, next) => {
 })
 
 router.post("/GetViewTestList", midway.checkToken, (req, res, next) => {
-    console.log("body fro latest err",req.body);
+    console.log("body fro latest err", req.body);
     db.executeSql("select * from testquelist where testid=" + req.body.id, function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
@@ -384,7 +395,7 @@ router.post("/GetViewTestList", midway.checkToken, (req, res, next) => {
                     if (err) {
                         console.log("Error in store.js", err);
                     } else {
-                        console.log("test list here====",data1[0]);
+                        console.log("test list here====", data1[0]);
                         qlist.push(data1[0]);
                         if (qlist.length == data.length) {
                             console.log(qlist);
@@ -491,14 +502,14 @@ router.post("/GetAllStudentlistForTeacher", midway.checkToken, (req, res, next) 
                     if (err) {
                         console.log("Error in store.js", err);
                     } else {
-                       
+
                         if (data1.length > 0 || data1 != undefined) {
                             for (let j = 0; j < data1.length; j++) {
                                 stu.push(data1[j]);
                             }
                         }
                         if (i == (data.length - 1)) {
-                           
+
                             return res.json(stu);
                         }
 
@@ -514,7 +525,7 @@ router.post("/GetAllStudentlistForTeacher", midway.checkToken, (req, res, next) 
 })
 
 router.post("/GetAllTestList", midway.checkToken, (req, res, next) => {
-   
+
     if (req.body.role == 'Admin') {
         db.executeSql("select * from testlist ", function (data, err) {
             if (err) {
@@ -530,7 +541,7 @@ router.post("/GetAllTestList", midway.checkToken, (req, res, next) => {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
-               
+
                 for (let i = 0; i < data.length; i++) {
                     db.executeSql("select * from testlist where subjectId=" + data[i].subid, function (data2, err) {
                         if (err) {
@@ -1628,7 +1639,7 @@ router.post("/GetSubmittedTest", midway.checkToken, (req, res, next) => {
 });
 router.post("/SaveTestResult", midway.checkToken, (req, res, next) => {
     let totalmarks = 0;
-    console.log("test creating -======",req.body);
+    console.log("test creating -======", req.body);
     for (let i = 0; i < req.body.question.length; i++) {
         if (req.body.question[i].answer == 'undefined') {
             req.body.question[i].answer = '-';
@@ -1847,12 +1858,12 @@ router.post("/SaveChapatersList", (req, res, next) => {
 
     for (let i = 0; i < req.body.chapList.length; i++) {
 
-        db.executeSql("select * from chapterlist where stdid="+req.body.stdid+" and subid="+req.body.subid+" and chapname='"+ req.body.chapList[i].chapName+"'",function(data,err){
-            if(err){
+        db.executeSql("select * from chapterlist where stdid=" + req.body.stdid + " and subid=" + req.body.subid + " and chapname='" + req.body.chapList[i].chapName + "'", function (data, err) {
+            if (err) {
                 console.log(err);
             }
-            else{
-                if(data.length == 0){
+            else {
+                if (data.length == 0) {
                     db.executeSql("INSERT INTO chapterlist(`stdid`,`subid`,`chapname`,`isactive`,`createddate`,`updateddate`)VALUES(" + req.body.stdid + "," + req.body.subid + ",'" + req.body.chapList[i].chapName + "'," + req.body.isactive + ",CURRENT_TIMESTAMP,null);", function (data, err) {
                         if (err) {
                             console.log(err);
@@ -1861,12 +1872,12 @@ router.post("/SaveChapatersList", (req, res, next) => {
                         }
                     });
                 }
-                else{
+                else {
                     res.json("dup");
                 }
             }
         })
-       
+
     }
     // res.json("success");
 });
