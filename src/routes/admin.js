@@ -1913,6 +1913,64 @@ router.get("/RemoveChapaterList/:id", midway.checkToken, (req, res, next) => {
     });
 })
 
+router.post("/UploadSyllabusImage", midway.checkToken, (req, res, next) => {
+    var imgname = generateUUID();
+
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'images/syllabus');
+        },
+        // By default, multer removes file extensions so let's add them back
+        filename: function (req, file, cb) {
+
+            cb(null, imgname + path.extname(file.originalname));
+        }
+    });
+    let upload = multer({ storage: storage }).single('file');
+    upload(req, res, function (err) {
+        console.log("path=", config.url + 'images/syllabus/' + req.file.filename);
+
+        if (req.fileValidationError) {
+            console.log("err1", req.fileValidationError);
+            return res.json("err1", req.fileValidationError);
+        } else if (!req.file) {
+            console.log('Please select an image to upload');
+            return res.json('Please select an image to upload');
+        } else if (err instanceof multer.MulterError) {
+            console.log("err3");
+            return res.json("err3", err);
+        } else if (err) {
+            console.log("err4");
+            return res.json("err4", err);
+        }
+        return res.json('/images/syllabus/' + req.file.filename);
+
+        console.log("You have uploaded this image");
+    });
+});
+
+router.post("/SaveSyllabusList", midway.checkToken, (req, res, next) => {
+    console.log(req.body);
+    db.executeSql("INSERT INTO `syllabus`(`stdid`, `subid`, `chapid`, `videotitle`, `descripition`, `videolength`, `videolink`, `isactive`, `image`, `createddate`) VALUES(" + req.body.stdid + "," + req.body.subid + "," + req.body.chapid + ",'" + req.body.videoTitle + "','" + req.body.descripition + "','" + req.body.videoLength + "','" + req.body.link + "'," + req.body.isactive + ",'" + req.body.image + "',CURRENT_TIMESTAMP);", function (data, err) {
+        if (err) {
+            res.json("error");
+        } else {
+            res.json("success");
+        }
+    });
+});
+router.get("/GetAllSyllabusList", midway.checkToken, (req, res, next) => {
+    db.executeSql("select * from syllabus", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+
+            return res.json(data);
+        }
+    });
+});
+
+
 
 
 function generateUUID() {
