@@ -1902,6 +1902,16 @@ router.post("/UpdateChapaterList", midway.checkToken, (req, res, next) => {
     });
 });
 
+router.post("/updateAdminProfile", midway.checkToken, (req, res, next) => {
+    db.executeSql("UPDATE `admin` SET firstname='" + req.body.firstname + "',lastname='" + req.body.lastname + "',email='" + req.body.email + "' WHERE id=" + req.body.id + ";", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.get("/RemoveChapaterList/:id", midway.checkToken, (req, res, next) => {
     console.log("deleted", req.params.id);
     db.executeSql("Delete from chapterlist where id=" + req.params.id, function (data, err) {
