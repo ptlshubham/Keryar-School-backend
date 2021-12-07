@@ -1353,48 +1353,47 @@ router.post("/saveCalendarEvents", midway.checkToken, (req, res, next) => {
         if (err) {
             res.json("error");
         } else {
-            if(req.body.stdlist.length >0 || req.body.teachlist.length >0){
-                if(req.body.stdlist.length >0){
+            if (req.body.stdlist.length > 0 || req.body.teachlist.length > 0) {
+                if (req.body.stdlist.length > 0) {
                     console.log(req.body.stdlist[0].stdid);
-                    for(let i=0;i<req.body.stdlist.length;i++){
-                        db.executeSql("select * from studentlist where standard="+req.body.stdlist[i].stdid,function(data2,err){
-                            if(err){
+                    for (let i = 0; i < req.body.stdlist.length; i++) {
+                        db.executeSql("select * from studentlist where standard=" + req.body.stdlist[i].stdid, function (data2, err) {
+                            if (err) {
                                 console.log(err);
                             }
-                            else{
-                                for(let j=0;j<data2.length;j++){
-                                    db.executeSql("INSERT INTO `eventassignedstudent`( `eventId`, `stuId`, `stdId`,`seen`) VALUES ("+data.insertId+","+data2[j].id+","+req.body.stdlist[i].stdid+",false)",function(data,err){
-                                        if(err){
+                            else {
+                                for (let j = 0; j < data2.length; j++) {
+                                    db.executeSql("INSERT INTO `eventassignedstudent`( `eventId`, `stuId`, `stdId`,`seen`) VALUES (" + data.insertId + "," + data2[j].id + "," + req.body.stdlist[i].stdid + ",false)", function (data, err) {
+                                        if (err) {
                                             console.log(err);
                                         }
-                                        else{}
-                        
+                                        else { }
+
                                     })
                                 }
                             }
-                        })    
-                    }    
+                        })
+                    }
                 }
-                if( req.body.teachlist.length >0){
-                    for(let i=0;i<req.body.teachlist.length;i++){
-                        db.executeSql("INSERT INTO `eventassigned`( `eventId`, `stdId`, `teachId`,`seen`) VALUES ("+data.insertId+",null,"+req.body.teachlist[i].teachid+",false)",function(data,err){
-                            if(err){
+                if (req.body.teachlist.length > 0) {
+                    for (let i = 0; i < req.body.teachlist.length; i++) {
+                        db.executeSql("INSERT INTO `eventassigned`( `eventId`, `stdId`, `teachId`,`seen`) VALUES (" + data.insertId + ",null," + req.body.teachlist[i].teachid + ",false)", function (data, err) {
+                            if (err) {
                                 console.log(err)
                             }
-                            else{}
-    
+                            else { }
+
                         })
-                    }    
-                } 
+                    }
+                }
             }
             res.json("sucess");
-           
-         }
+
+        }
     });
 });
 
 router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
-    console.log(req.body);
     if (req.body.role == 'Admin') {
         db.executeSql("select * from events", function (data, err) {
             if (err) {
@@ -1405,7 +1404,7 @@ router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
         });
     }
     else if (req.body.role == 'Teacher') {
-        db.executeSql("select e.title ,e.date from events as e join eventassigned es where e.id=es.eventId and teachId=" + req.body.userid + " and seen=false", function (data, err) {
+        db.executeSql("select e.title ,e.date ,es.id from events as e join eventassigned es where e.id=es.eventId and teachId=" + req.body.userid + " and seen=false", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -1414,7 +1413,7 @@ router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
         });
     }
     else if (req.body.role == 'Student') {
-        db.executeSql("select e.title ,e.date from events as e join eventassignedstudent es where e.id=es.eventId and stuId=" + req.body.userid + " and seen=false", function (data, err) {
+        db.executeSql("select e.title ,e.date,es.id from events as e join eventassignedstudent es where e.id=es.eventId and stuId=" + req.body.userid + " and seen=false", function (data, err) {
             if (err) {
                 console.log("Error in store.js", err);
             } else {
@@ -1425,6 +1424,37 @@ router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
 
 });
 
+router.post("/UpdateNotificationList", (req, res, next) => {
+    if (req.body.role == 'Admin') {
+        db.executeSql("UPDATE `events` SET active=false WHERE id=" + req.body.id + ";", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if (req.body.role == 'Teacher') {
+        db.executeSql("UPDATE `eventassigned` SET seen=true WHERE id=" + req.body.id + ";", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if (req.body.role == 'Student') {
+        db.executeSql("UPDATE `eventassignedstudent` SET seen=true WHERE id=" + req.body.id + ";", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+
+
+});
 
 
 router.post("/GetStudentProfilePic", midway.checkToken, (req, res, next) => {
