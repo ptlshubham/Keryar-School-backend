@@ -1425,33 +1425,43 @@ router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
 });
 
 router.post("/UpdateNotificationList", (req, res, next) => {
-    if (req.body.role == 'Admin') {
-        db.executeSql("UPDATE `events` SET active=false WHERE id=" + req.body.id + ";", function (data, err) {
-            if (err) {
-                console.log("Error in store.js", err);
-            } else {
-                return res.json(data);
-            }
-        });
+    console.log(req.body);
+    if (req.body[0].role == 'Admin') {
+        for (let i = 0; i < req.body.length; i++) {
+            db.executeSql("UPDATE `events` SET active=false WHERE id=" + req.body[i].id + ";", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
+                    // return res.json(data);
+                }
+            });
+        }
     }
-    else if (req.body.role == 'Teacher') {
-        db.executeSql("UPDATE `eventassigned` SET seen=true WHERE id=" + req.body.id + ";", function (data, err) {
-            if (err) {
-                console.log("Error in store.js", err);
-            } else {
-                return res.json(data);
-            }
-        });
+    else if (req.body[0].role == 'Teacher') {
+        for (let i = 0; i < req.body.length; i++) {
+            db.executeSql("UPDATE `eventassigned` SET seen=true WHERE id=" + req.body[i].id + ";", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
+                    // return res.json(data);
+                }
+            });
+        }
     }
-    else if (req.body.role == 'Student') {
-        db.executeSql("UPDATE `eventassignedstudent` SET seen=true WHERE id=" + req.body.id + ";", function (data, err) {
-            if (err) {
-                console.log("Error in store.js", err);
-            } else {
-                return res.json(data);
-            }
-        });
+    else if (req.body[0].role == 'Student') {
+        console.log('vfyv');
+        console.log(req.body.length);
+        for (let i = 0; i < req.body.length; i++) {
+            db.executeSql("UPDATE `eventassignedstudent` SET seen=true WHERE id=" + req.body[i].id + ";", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
+                    // return res.json(data);
+                }
+            });
+        }
     }
+    return res.json('success');
 
 
 });
