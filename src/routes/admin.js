@@ -1353,8 +1353,43 @@ router.post("/saveCalendarEvents", midway.checkToken, (req, res, next) => {
         if (err) {
             res.json("error");
         } else {
-            res.json("success");
-        }
+            if(req.body.stdlist.length >0 || req.body.teachlist.length >0){
+                if(req.body.stdlist.length >0){
+                    console.log(req.body.stdlist[0].stdid);
+                    for(let i=0;i<req.body.stdlist.length;i++){
+                        db.executeSql("select * from studentlist where standard="+req.body.stdlist[i].stdid,function(data2,err){
+                            if(err){
+                                console.log(err);
+                            }
+                            else{
+                                for(let j=0;j<data2.length;j++){
+                                    db.executeSql("INSERT INTO `eventassignedstudent`( `eventId`, `stuId`, `stdId`,`seen`) VALUES ("+data.insertId+","+data2[j].id+","+req.body.stdlist[i].stdid+",false)",function(data,err){
+                                        if(err){
+                                            console.log(err);
+                                        }
+                                        else{}
+                        
+                                    })
+                                }
+                            }
+                        })    
+                    }    
+                }
+                if( req.body.teachlist.length >0){
+                    for(let i=0;i<req.body.teachlist.length;i++){
+                        db.executeSql("INSERT INTO `eventassigned`( `eventId`, `stdId`, `teachId`,`seen`) VALUES ("+data.insertId+",null,"+req.body.teachlist[i].teachid+",false)",function(data,err){
+                            if(err){
+                                console.log(err)
+                            }
+                            else{}
+    
+                        })
+                    }    
+                } 
+            }
+            res.json("sucess");
+           
+         }
     });
 });
 
