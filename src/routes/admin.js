@@ -48,7 +48,7 @@ router.post("/GetStdList", midway.checkToken, (req, res, next) => {
                             // console.log(data1);
                             std.push(data1[0]);
                             if (std.length == data.length) {
-                                console.log("ppppppppppp", std);
+                                // console.log("ppppppppppp", std);
                                 res.json(std);
                             }
                         }
@@ -496,7 +496,7 @@ router.post("/GetAllStudentlistForTeacher", midway.checkToken, (req, res, next) 
             console.log("Error in store.js", err);
         } else {
             let stu = [];
-            console.log("rights here", data);
+            // console.log("rights here", data);
             for (let i = 0; i < data.length; i++) {
                 db.executeSql("select * from studentlist  where standard='" + data[i].stdid + "';", function (data1, err) {
                     if (err) {
@@ -929,7 +929,7 @@ router.post("/updateSendLink", midway.checkToken, (req, res, next) => {
 
 router.post("/GetStudentActiveTest", midway.checkToken, (req, res, next) => {
     console.log("call-5");
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.role == 'Student') {
         db.executeSql("select * from testattempt where stuid=" + req.body.stuid + "", function (data, err) {
             if (err) {
@@ -945,13 +945,13 @@ router.post("/GetStudentActiveTest", midway.checkToken, (req, res, next) => {
                                 console.log("Error in test join", err);
                             } else {
 
-                                console.log("11status=====", data[i].status);
+                                // console.log("11status=====", data[i].status);
                                 data1[0].teststatus = data[i].status;
-                                console.log("2status=====", data1[0].teststatus);
-                                console.log("final data will be", data1[0]);
+                                // console.log("2status=====", data1[0].teststatus);
+                                // console.log("final data will be", data1[0]);
                                 test.push(data1[0]);
                                 if (test.length == data.length) {
-                                    console.log("final data will be", test);
+                                    // console.log("final data will be", test);
                                     return res.json(test);
                                 }
                             }
@@ -1358,15 +1358,39 @@ router.post("/saveCalendarEvents", midway.checkToken, (req, res, next) => {
     });
 });
 
-router.get("/getCalendarEvents", midway.checkToken, (req, res, next) => {
-    db.executeSql("select * from events", function (data, err) {
-        if (err) {
-            console.log("Error in store.js", err);
-        } else {
-            return res.json(data);
-        }
-    });
+router.post("/getCalendarEvents", midway.checkToken, (req, res, next) => {
+    console.log(req.body);
+    if (req.body.role == 'Admin') {
+        db.executeSql("select * from events", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if (req.body.role == 'Teacher') {
+        db.executeSql("select e.title ,e.date from events as e join eventassigned es where e.id=es.eventId and teachId=" + req.body.userid + " and seen=false", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+    else if (req.body.role == 'Student') {
+        db.executeSql("select e.title ,e.date from events as e join eventassignedstudent es where e.id=es.eventId and stuId=" + req.body.userid + " and seen=false", function (data, err) {
+            if (err) {
+                console.log("Error in store.js", err);
+            } else {
+                return res.json(data);
+            }
+        });
+    }
+
 });
+
+
 
 router.post("/GetStudentProfilePic", midway.checkToken, (req, res, next) => {
     console.log(req.body)
@@ -1583,7 +1607,6 @@ router.post("/GetVisitorTest", (req, res, next) => {
 });
 
 router.post("/GetTotalofTestmarks", midway.checkToken, (req, res, next) => {
-    console.log("result here=====", req.body)
     db.executeSql("select * from finalresult where studentid=" + req.body.stuid + " and testid=" + req.body.id, function (data, err) {
         if (err) {
             console.log(err);
