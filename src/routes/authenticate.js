@@ -176,7 +176,7 @@ router.post('/UserLogin', (req, res, next) => {
     if (body.role == 'Teacher') {
         db.executeSql("select * from teacherlist where email='" + req.body.email + "';", function (data, err) {
             console.log(data);
-            if (data != null) {
+            if (data.length != 0) {
                 db.executeSql("select * from teacherlist where email='" + req.body.email + "' and password='" + encPassword + "';", function (data, err) {
                     console.log(data);
                     if (data.length >0) {
@@ -207,10 +207,10 @@ router.post('/UserLogin', (req, res, next) => {
         });
     }
     else {
-
+      
         db.executeSql("select * from studentlist where email='" + req.body.email + "';", function (data, err) {
-            // console.log(data);
-            if (data != null) {
+             
+            if (data.length != 0) {
                 db.executeSql("select * from studentlist where email='" + req.body.email + "' and password='" + encPassword + "';", function (data, err) {
                     // console.log(data);
                     if (data.length >0) {
@@ -235,7 +235,51 @@ router.post('/UserLogin', (req, res, next) => {
                 });
             }
             else {
-                return res.json(1);
+             
+                db.executeSql("select * from visitorreg where email='" + req.body.email + "';",function(data,err){
+                    if(err){
+                        console.log(err)
+                    }
+                    else{
+                       
+                        if (data.length != 0) {
+                            db.executeSql("select * from visitorreg where email='" + req.body.email + "' and password='" + encPassword + "';", function (data, err) {
+                                if(err){
+                                    console.log(err);
+                                }
+                                else{
+                                    console.log(data);
+                                    if (data.length >0) {
+                                        module.exports.user = {
+                                            username: data[0].email, password: data[0].password
+                                        }
+                                        let token = jwt.sign({ username: data[0].email, password: data[0].password },
+                                            secret,
+                                            {
+                                                expiresIn: '1h' // expires in 24 hours
+                                            }
+                                        );
+                                        console.log("token=", token);
+                                        data[0].token = token;
+                                        data[0].role = 'Visitor';
+
+                
+                                        res.cookie('auth', token);
+                                        res.json(data);
+                                    }
+                                    else {
+                                        return res.json(2);
+                                    }
+                                }
+                                
+                            });
+                        }
+                        else{
+                            return res.json(1);
+                        }
+                    }
+
+                })
             }
         });
     }
