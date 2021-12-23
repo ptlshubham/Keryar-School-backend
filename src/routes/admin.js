@@ -20,6 +20,60 @@ router.post("/SaveStdList", midway.checkToken, (req, res, next) => {
         }
     });
 });
+router.post("/GetAttendanceCount",midway.checkToken,(req,res,next)=>{
+
+    let attdata=[];
+    for(let  i=0;i<req.body.length;i++){
+        db.executeSql("select COUNT(*) as count from studentattandance where date=DATE_FORMAT('"+req.body[i]+"','%Y-%m-%d') and title='Present'",function(data,err){
+            if(err){
+                console.log(err);
+            }
+            else{
+               
+                attdata.push(data[0]);
+                if(attdata.length==req.body.length){
+                    res.json(attdata);
+                }
+               
+            }
+
+        })
+    }
+});
+
+router.post("/GetTeacherForChat",midway.checkToken,(req,res,next)=>{
+    db.executeSql("select * from studentlist where id="+req.body.id,function(data,err){
+        if(err){
+            console.log(err)
+        }
+        else{
+            db.executeSql("select * from subrightstoteacher where stdid="+data[0].standard,function(data1,err){
+                if(err){
+                    console.log(err)
+                }
+                else{
+                    let teachdata=[];
+                    for(let i=0; i<data1.length;i++){
+                        db.executeSql("select * from teacherlist where id="+data1[i].teacherid,function(data2,err){
+                            if(err){
+                                console.log(err)
+                            }
+                            else{
+                                console.log(data2);
+                                teachdata.push(data2[0]);
+                                if(teachdata.length == data1.length){
+                                    res.json(teachdata);
+                                }
+                            }
+                        });
+
+                    }
+                }
+            })
+        }
+    })
+
+});
 
 router.post("/GetStdList", midway.checkToken, (req, res, next) => {
     console.log("call-1");

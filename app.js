@@ -1,6 +1,19 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const chat = require('./src/routes/chat');
+
+const Pusher = require("pusher");
+
+const pusher = new Pusher({
+  appId: "1319778",
+  key: "7ccfdfbf0b0dc54aa9e6",
+  secret: "30bfd19be74ca0dd945f",
+  cluster: "ap2",
+  useTLS: true
+});
+
+
 
 const cors = require("cors");
 var corsoption={
@@ -17,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const adminRoutes = require('./src/routes/admin');
 const userRoutes = require('./src/routes/user');
  const auth = require('./src/routes/authenticate');
+ const msg = require('./src/routes/message');
 
 // parse application/x-www-form-urlencoded
 
@@ -40,6 +54,7 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use("/user", userRoutes);
  app.use("/authenticate",auth);
+ app.use("/pusher",msg);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
