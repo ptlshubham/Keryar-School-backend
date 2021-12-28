@@ -20,48 +20,48 @@ router.post("/SaveStdList", midway.checkToken, (req, res, next) => {
         }
     });
 });
-router.post("/GetAttendanceCount",midway.checkToken,(req,res,next)=>{
+router.post("/GetAttendanceCount", midway.checkToken, (req, res, next) => {
 
-    let attdata=[];
-    for(let  i=0;i<req.body.length;i++){
-        db.executeSql("select COUNT(*) as count from studentattandance where date=DATE_FORMAT('"+req.body[i]+"','%Y-%m-%d') and title='Present'",function(data,err){
-            if(err){
+    let attdata = [];
+    for (let i = 0; i < req.body.length; i++) {
+        db.executeSql("select COUNT(*) as count from studentattandance where date=DATE_FORMAT('" + req.body[i] + "','%Y-%m-%d') and title='Present'", function (data, err) {
+            if (err) {
                 console.log(err);
             }
-            else{
-               
+            else {
+
                 attdata.push(data[0]);
-                if(attdata.length==req.body.length){
+                if (attdata.length == req.body.length) {
                     res.json(attdata);
                 }
-               
+
             }
 
         })
     }
 });
 
-router.post("/GetTeacherForChat",midway.checkToken,(req,res,next)=>{
-    db.executeSql("select * from studentlist where id="+req.body.id,function(data,err){
-        if(err){
+router.post("/GetTeacherForChat", midway.checkToken, (req, res, next) => {
+    db.executeSql("select * from studentlist where id=" + req.body.id, function (data, err) {
+        if (err) {
             console.log(err)
         }
-        else{
-            db.executeSql("select * from subrightstoteacher where stdid="+data[0].standard,function(data1,err){
-                if(err){
+        else {
+            db.executeSql("select * from subrightstoteacher where stdid=" + data[0].standard, function (data1, err) {
+                if (err) {
                     console.log(err)
                 }
-                else{
-                    let teachdata=[];
-                    for(let i=0; i<data1.length;i++){
-                        db.executeSql("select * from teacherlist where id="+data1[i].teacherid,function(data2,err){
-                            if(err){
+                else {
+                    let teachdata = [];
+                    for (let i = 0; i < data1.length; i++) {
+                        db.executeSql("select * from teacherlist where id=" + data1[i].teacherid, function (data2, err) {
+                            if (err) {
                                 console.log(err)
                             }
-                            else{
+                            else {
                                 console.log(data2);
                                 teachdata.push(data2[0]);
-                                if(teachdata.length == data1.length){
+                                if (teachdata.length == data1.length) {
                                     res.json(teachdata);
                                 }
                             }
@@ -401,19 +401,19 @@ router.post("/saveTeacherList", midway.checkToken, (req, res, next) => {
     });
 });
 
-router.post("/SaveStudentList", midway.checkToken, (req, res, next) => {
-    if (req.body.dateofbirth == undefined) {
-        req.body.dateofbirth = null;
-    }
-    db.executeSql("INSERT INTO `studentlist`(`firstname`,`middlename`,`lastname`,`email`,`password`,`gender`,`dateofbirth`,`contact`,`parents`,`fname`, `mname`, `mnumber`, `pactive`, `mactive`, `cactive`, `batchtime`, `cmmitfee`,`address`,`city`,`pincode`,`standard`,`grnumber`,`propic`)VALUES('" + req.body.firstname + "','" + req.body.middlename + "','" + req.body.lastname + "','" + req.body.email + "','" + req.body.password + "','" + req.body.gender + "','10-07-2021'," + req.body.contact + "," + req.body.parents + ",'" + req.body.fname + "','" + req.body.mname + "'," + req.body.mnumber + ",'" + req.body.pactive + "','" + req.body.mactive + "','" + req.body.cactive + "','" + req.body.batchtime + "','" + req.body.cfees + "','" + req.body.address + "','" + req.body.city + "'," + req.body.pincode + ",'" + req.body.standard + "','" + req.body.grnumber + "','" + req.body.profile + "');", function (data, err) {
-        if (err) {
-            console.log(err)
-        } else {
+// router.post("/SaveStudentList", midway.checkToken, (req, res, next) => {
+//     if (req.body.dateofbirth == undefined) {
+//         req.body.dateofbirth = null;
+//     }
+//     db.executeSql("INSERT INTO `studentlist`(`firstname`,`middlename`,`lastname`,`email`,`password`,`gender`,`dateofbirth`,`contact`,`parents`,`fname`, `mname`, `mnumber`, `pactive`, `mactive`, `cactive`, `batchtime`, `cmmitfee`,`address`,`city`,`pincode`,`standard`,`grnumber`,`propic`)VALUES('" + req.body.firstname + "','" + req.body.middlename + "','" + req.body.lastname + "','" + req.body.email + "','" + req.body.password + "','" + req.body.gender + "','10-07-2021'," + req.body.contact + "," + req.body.parents + ",'" + req.body.fname + "','" + req.body.mname + "'," + req.body.mnumber + ",'" + req.body.pactive + "','" + req.body.mactive + "','" + req.body.cactive + "','" + req.body.batchtime + "','" + req.body.cfees + "','" + req.body.address + "','" + req.body.city + "'," + req.body.pincode + ",'" + req.body.standard + "','" + req.body.grnumber + "','" + req.body.profile + "');", function (data, err) {
+//         if (err) {
+//             console.log(err)
+//         } else {
 
-            res.json("success");
-        }
-    });
-});
+//             res.json("success");
+//         }
+//     });
+// });
 
 router.post("/GetStudentList", midway.checkToken, (req, res, next) => {
     console.log(req.body)
@@ -659,6 +659,119 @@ router.post('/login', function (req, res, next) {
     });
 
 });
+
+router.post('/GetUsersLogin', function (req, res, next) {
+    // restart1();
+    const body = req.body;
+    console.log(body);
+    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+    var repass = salt + '' + body.password;
+    var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
+    db.executeSql("select * from users where email='" + req.body.email + "';", function (data, err) {
+
+        if (data == null || data == undefined) {
+            return res.json(1);
+        }
+        else {
+            db.executeSql("select * from users where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
+                console.log(data1);
+                console.log('main');
+                if (data1.length > 0) {
+
+                    module.exports.user1 = {
+                        username: data1[0].email, password: data1[0].password
+                    }
+                    let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
+                        secret,
+                        {
+                            expiresIn: '1h' // expires in 24 hours
+                        }
+                    );
+                    console.log("token=", token);
+
+
+                    res.cookie('auth', token);
+                    if (data1[0].role == 'Admin') {
+                        let resdata = [];
+                        db.executeSql("select * from admin where uid=" + data1[0].userid, function (data2, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata.push(data2[0]);
+                                resdata[0].token = token;
+                                resdata[0].role = data1[0].role;
+                                return res.json(resdata);
+                            }
+                        })
+
+                    }
+                    else if (data1[0].role == 'Teacher') {
+                        let resdata1 = [];
+                        db.executeSql("select * from teacherlist where uid=" + data1[0].userid, function (data3, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata1.push(data3[0]);
+                                resdata1[0].token = token;
+                                resdata1[0].role = data1[0].role;
+                                return res.json(resdata1);
+                            }
+                        })
+                    }
+                    else if (data1[0].role == 'Student') {
+                        let resdata2 = [];
+                        db.executeSql("select * from studentlist where uid=" + data1[0].userid, function (data4, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata2.push(data4[0]);
+                                resdata2[0].token = token;
+                                resdata2[0].role = data1[0].role;
+                                return res.json(resdata2);
+                            }
+                        })
+                    }
+                    else if (data1[0].role == 'Visitor') {
+                        let resdata3 = [];
+                        db.executeSql("select * from visitorreg where uid=" + data1[0].userid, function (data5, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata3.push(data5[0]);
+                                resdata3[0].token = token;
+                                resdata3[0].role = data1[0].role;
+                                return res.json(resdata3);
+                            }
+                        })
+                    }
+                    else if (data1[0].role == 'Parents') {
+                        let resdata4 = [];
+                        db.executeSql("select * from parentsinfo where uid=" + data1[0].userid, function (data6, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata4.push(data6[0]);
+                                resdata4[0].token = token;
+                                resdata4[0].role = data1[0].role;
+                                return res.json(resdata4);
+                            }
+                        })
+                    }
+                }
+                else {
+
+                }
+            });
+        }
+    });
+
+});
+
 router.post('/VisitorLogin', function (req, res, next) {
     restart1();
     const body = req.body;
