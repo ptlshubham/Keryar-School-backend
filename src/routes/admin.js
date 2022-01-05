@@ -617,49 +617,50 @@ router.post("/GetAllTestList", midway.checkToken, (req, res, next) => {
     }
 });
 
+
+// router.post('/login', function (req, res, next) {
+//     restart1();
+//     const body = req.body;
+//     console.log(body);
+//     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+//     var repass = salt + '' + body.password;
+//     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
+//     db.executeSql("select * from admin where email='" + req.body.email + "';", function (data, err) {
+
+//         if (data == null || data == undefined) {
+//             return res.json(1);
+//         }
+//         else {
+
+//             db.executeSql("select * from admin where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
+//                 console.log(data1);
+//                 if (data1.length > 0) {
+
+//                     module.exports.user1 = {
+//                         username: data1[0].email, password: data1[0].password
+//                     }
+//                     let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
+//                         secret,
+//                         {
+//                             expiresIn: '1h' // expires in 24 hours
+//                         }
+//                     );
+//                     console.log("token=", token);
+//                     data[0].token = token;
+
+//                     res.cookie('auth', token);
+//                     res.json(data);
+//                 }
+//                 else {
+//                     return res.json(2);
+//                 }
+//             });
+//         }
+//     });
+
+// });
+
 let secret = 'prnv';
-router.post('/login', function (req, res, next) {
-    restart1();
-    const body = req.body;
-    console.log(body);
-    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-    var repass = salt + '' + body.password;
-    var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("select * from admin where email='" + req.body.email + "';", function (data, err) {
-
-        if (data == null || data == undefined) {
-            return res.json(1);
-        }
-        else {
-
-            db.executeSql("select * from admin where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
-                console.log(data1);
-                if (data1.length > 0) {
-
-                    module.exports.user1 = {
-                        username: data1[0].email, password: data1[0].password
-                    }
-                    let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
-                        secret,
-                        {
-                            expiresIn: '1h' // expires in 24 hours
-                        }
-                    );
-                    console.log("token=", token);
-                    data[0].token = token;
-
-                    res.cookie('auth', token);
-                    res.json(data);
-                }
-                else {
-                    return res.json(2);
-                }
-            });
-        }
-    });
-
-});
-
 router.post('/GetUsersLogin', function (req, res, next) {
     // restart1();
     const body = req.body;
@@ -674,7 +675,8 @@ router.post('/GetUsersLogin', function (req, res, next) {
             return res.json(1);
         }
         else {
-           
+            // var time = get_time_diff;
+            // console.log(time);
             db.executeSql("select * from users where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
                 console.log(data1);
                 console.log('main');
@@ -703,6 +705,14 @@ router.post('/GetUsersLogin', function (req, res, next) {
                                 resdata.push(data2[0]);
                                 resdata[0].token = token;
                                 resdata[0].role = data1[0].role;
+                                resdata[0].last_login = data1[0].out_time;
+                                resdata[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
                                 return res.json(resdata);
                             }
                         })
@@ -718,6 +728,14 @@ router.post('/GetUsersLogin', function (req, res, next) {
                                 resdata1.push(data3[0]);
                                 resdata1[0].token = token;
                                 resdata1[0].role = data1[0].role;
+                                resdata1[0].last_login = data1[0].out_time;
+                                resdata1[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
                                 return res.json(resdata1);
                             }
                         })
@@ -732,6 +750,14 @@ router.post('/GetUsersLogin', function (req, res, next) {
                                 resdata2.push(data4[0]);
                                 resdata2[0].token = token;
                                 resdata2[0].role = data1[0].role;
+                                resdata2[0].last_login = data1[0].out_time;
+                                resdata2[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
                                 return res.json(resdata2);
                             }
                         })
@@ -746,6 +772,14 @@ router.post('/GetUsersLogin', function (req, res, next) {
                                 resdata3.push(data5[0]);
                                 resdata3[0].token = token;
                                 resdata3[0].role = data1[0].role;
+                                resdata3[0].last_login = data1[0].out_time;
+                                resdata3[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
                                 return res.json(resdata3);
                             }
                         })
@@ -760,60 +794,110 @@ router.post('/GetUsersLogin', function (req, res, next) {
                                 resdata4.push(data6[0]);
                                 resdata4[0].token = token;
                                 resdata4[0].role = data1[0].role;
+                                resdata4[0].last_login = data1[0].out_time;
+                                resdata4[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
                                 return res.json(resdata4);
                             }
                         })
                     }
-                }
-                else {
+                    else if (data1[0].role == 'Sub-Admin') {
+                        let resdata5 = [];
+                        db.executeSql("select * from admin where uid=" + data1[0].userid, function (data7, err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                resdata5.push(data7[0]);
+                                resdata5[0].token = token;
+                                resdata5[0].role = data1[0].role;
+                                resdata5[0].last_login = data1[0].out_time;
+                                resdata5[0].last_inTime = data1[0].in_time;
+                                db.executeSql("UPDATE  `users` SET status=true,in_time=CURRENT_TIMESTAMP WHERE userid=" + data1[0].userid, function (msg, err) {
+                                    if (err) {
+                                        console.log("Error in store.js", err);
+                                    } else {
+                                    }
+                                });
+                                return res.json(resdata5);
+                            }
+                        })
 
-                }
-            });
-        }
-    });
-
-});
-
-router.post('/VisitorLogin', function (req, res, next) {
-    restart1();
-    const body = req.body;
-    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-    var repass = salt + '' + body.password;
-    var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("select * from visitorreg where email='" + req.body.email + "';", function (data, err) {
-
-        if (data == null || data == undefined) {
-            return res.json(1);
-        }
-        else {
-
-            db.executeSql("select * from visitorreg where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
-                console.log(data1);
-                if (data1.length > 0) {
-
-                    module.exports.user1 = {
-                        username: data1[0].email, password: data1[0].password
                     }
-                    let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
-                        secret,
-                        {
-                            expiresIn: '1h' // expires in 24 hours
-                        }
-                    );
-                    console.log("token=", token);
-                    data[0].token = token;
 
-                    res.cookie('auth', token);
-                    res.json(data);
+
                 }
                 else {
-                    return res.json(2);
+
+                }
+            });
+        }
+
+    });
+
+});
+
+router.post("/UpdateLogoutDetails", (req, res, next) => {
+    console.log(req.body)
+    db.executeSql("UPDATE  `users` SET status=false,out_time=CURRENT_TIMESTAMP WHERE userid=" + req.body.userid, function (msg, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            db.executeSql("INSERT INTO `logintime`(`userid`, `login_minute`, `login_date`)VALUES(" + req.body.userid + "," + req.body.loginMinute + ",CURRENT_TIMESTAMP);", function (data, err) {
+                if (err) {
+                    console.log("Error in store.js", err);
+                } else {
+                    return res.json('Success');
                 }
             });
         }
     });
-
 });
+// router.post('/VisitorLogin', function (req, res, next) {
+//     restart1();
+//     const body = req.body;
+//     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+//     var repass = salt + '' + body.password;
+//     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
+//     db.executeSql("select * from visitorreg where email='" + req.body.email + "';", function (data, err) {
+
+//         if (data == null || data == undefined) {
+//             return res.json(1);
+//         }
+//         else {
+
+//             db.executeSql("select * from visitorreg where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
+//                 console.log(data1);
+//                 if (data1.length > 0) {
+
+//                     module.exports.user1 = {
+//                         username: data1[0].email, password: data1[0].password
+//                     }
+//                     let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
+//                         secret,
+//                         {
+//                             expiresIn: '1h' // expires in 24 hours
+//                         }
+//                     );
+//                     console.log("token=", token);
+//                     data[0].token = token;
+
+//                     res.cookie('auth', token);
+//                     res.json(data);
+//                 }
+//                 else {
+//                     return res.json(2);
+//                 }
+//             });
+//         }
+//     });
+
+// });
 function restart1() {
     setTimeout(function () {
         // When NodeJS exits
@@ -1241,7 +1325,7 @@ router.post("/ForgotPassword", (req, res, next) => {
             return res.json('err');
         } else {
             console.log(data[0]);
-            db.executeSql("INSERT INTO `otp`(`userid`, `otp`, `createddate`, `createdtime`,`role`,`isactive`) VALUES (" + data[0].userid + "," + otp + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'" + data[0].role+"',true)", function (data1, err) {
+            db.executeSql("INSERT INTO `otp`(`userid`, `otp`, `createddate`, `createdtime`,`role`,`isactive`) VALUES (" + data[0].userid + "," + otp + ",CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'" + data[0].role + "',true)", function (data1, err) {
                 if (err) {
                     console.log(err);
                 }
@@ -2117,8 +2201,36 @@ router.get("/GetAllSyllabusList", midway.checkToken, (req, res, next) => {
     });
 });
 
+router.post("/SaveNewTeamMembers", midway.checkToken, (req, res, next) => {
+    var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+    var repass = salt + '' + req.body.password;
+    var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
+    db.executeSql("INSERT INTO `users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Admin',true)", function (datau, err) {
+        if (err) {
+            console.log(err)
+        } else {
+            db.executeSql("INSERT INTO `admin`(`firstname`, `lastname`, `email`, `password`, `isactive`, `uid`,`role`) VALUES('" + req.body.firstname + "','" + req.body.lastname + "','" + req.body.email + "','" + encPassword + "'," + req.body.isactive + "," + datau.insertId + ",'" + req.body.role + "');", function (data, err) {
+                if (err) {
+                    res.json("error");
+                } else {
+                    return res.json(data);
+                }
+            });
+        }
+    });
 
+});
 
+router.get("/GetAllSubAdminList", midway.checkToken, (req, res, next) => {
+    db.executeSql("select * from Admin where role='Sub-Admin'", function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+
+            return res.json(data);
+        }
+    });
+});
 
 function generateUUID() {
     var d = new Date().getTime();
@@ -2130,6 +2242,7 @@ function generateUUID() {
 
     return uuid;
 }
+
 
 
 module.exports = router;

@@ -89,7 +89,7 @@ router.post("/SaveVisitorDetails", (req, res, next) => {
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass = salt + '' + req.body.password;
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Visitor',true)", function (datau, err) {
+    db.executeSql("INSERT INTO `users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Visitor',true)", function (datau, err) {
         if (err) {
             console.log(err)
         } else {
