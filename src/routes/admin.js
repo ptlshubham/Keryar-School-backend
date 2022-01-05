@@ -670,21 +670,23 @@ router.post('/GetUsersLogin', function (req, res, next) {
     db.executeSql("select * from users where email='" + req.body.email + "';", function (data, err) {
 
         if (data == null || data == undefined) {
+           
             return res.json(1);
         }
         else {
+           
             db.executeSql("select * from users where email='" + req.body.email + "' and password='" + encPassword + "';", function (data1, err) {
                 console.log(data1);
                 console.log('main');
                 if (data1.length > 0) {
 
-                    module.exports.user1 = {
+                    module.exports.user1 = {    
                         username: data1[0].email, password: data1[0].password
                     }
                     let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
                         secret,
                         {
-                            expiresIn: '1h' // expires in 24 hours
+                            expiresIn: '120s' // expires in 24 hours
                         }
                     );
                     console.log("token=", token);
