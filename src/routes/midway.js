@@ -1,6 +1,9 @@
+const express = require("express");
 let jwt = require('jsonwebtoken');
 // const config = require('./config.js');
+const router = express.Router();
 let user = require('./authenticate');
+
 let user1 = require('./admin');
 
 let checkToken = (req, res, next) => {
@@ -24,6 +27,16 @@ let checkToken = (req, res, next) => {
           if ((user.user.username == decoded.username) && (user.user.password == decoded.password)) {
             req.decoded = decoded;
             next();
+          //   router.post("/UpdateStandardList", (req, res, next) => {
+          //     console.log(req.body)
+          //     db.executeSql("UPDATE  `stdlist` SET stdname='" + req.body.stdname + "' WHERE id=" + req.body.id + ";", function (data, err) {
+          //         if (err) {
+          //             console.log("Error in store.js", err);
+          //         } else {
+          //             return res.json(data);
+          //         }
+          //     });
+          // });
           }
         }
         else {
