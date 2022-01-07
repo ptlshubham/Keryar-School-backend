@@ -672,7 +672,7 @@ router.post("/GetAllTestList", midway.checkToken, (req, res, next) => {
 
 let secret = 'prnv';
 router.post('/GetUsersLogin', function (req, res, next) {
-    // restart1();
+    restart1();
     const body = req.body;
     console.log(body);
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
@@ -681,6 +681,7 @@ router.post('/GetUsersLogin', function (req, res, next) {
     db.executeSql("select * from users where email='" + req.body.email + "';", function (data, err) {
 
         if (data == null || data == undefined) {
+           
             return res.json(1);
         }
         else {
@@ -691,7 +692,7 @@ router.post('/GetUsersLogin', function (req, res, next) {
                 console.log('main');
                 if (data1.length > 0) {
 
-                    module.exports.user1 = {
+                    module.exports.user1 = {    
                         username: data1[0].email, password: data1[0].password
                     }
                     let token = jwt.sign({ username: data1[0].email, password: data1[0].password },
