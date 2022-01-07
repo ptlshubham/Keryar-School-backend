@@ -13,7 +13,7 @@ router.post("/saveTeacherList", (req, res, next) => {
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
     // console.log(encPassword);
     console.log(req.body);
-    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Teacher',true)", function (data, err) {
+    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`, `in_time`, `out_time`)VALUES('" + req.body.email + "','" + encPassword + "','Teacher',true,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", function (data, err) {
         if (err) {
             console.log("Error in store.js", err);
         } else {
@@ -51,7 +51,7 @@ router.post("/SaveStudentList", (req, res, next) => {
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
     var prepass = salt + '' + req.body.parentsPwd;
     var encParentsPassword = crypto.createHash('sha1').update(prepass).digest('hex');
-    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Student',true)", function (datau, err) {
+    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`, `in_time`, `out_time`)VALUES('" + req.body.email + "','" + encPassword + "','Student',true,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", function (datau, err) {
         if (err) {
             console.log(err)
         } else {
@@ -61,7 +61,7 @@ router.post("/SaveStudentList", (req, res, next) => {
                     console.log(err)
                 } else {
                     console.log(data.insertId);
-                    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.parentsEmail + "','" + encPassword + "','Parents',true)", function (datap, err) {
+                    db.executeSql("INSERT INTO`users`(`email`, `password`, `role`, `isactive`, `in_time`, `out_time`)VALUES('" + req.body.parentsEmail + "','" + encPassword + "','Parents',true,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", function (datap, err) {
                         if (err) {
                             console.log(err)
                         } else {
@@ -89,7 +89,7 @@ router.post("/SaveVisitorDetails", (req, res, next) => {
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass = salt + '' + req.body.password;
     var encPassword = crypto.createHash('sha1').update(repass).digest('hex');
-    db.executeSql("INSERT INTO `users`(`email`, `password`, `role`, `isactive`)VALUES('" + req.body.email + "','" + encPassword + "','Visitor',true)", function (datau, err) {
+    db.executeSql("INSERT INTO `users`(`email`, `password`, `role`, `isactive`, `in_time`, `out_time`)VALUES('" + req.body.email + "','" + encPassword + "','Visitor',true,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", function (datau, err) {
         if (err) {
             console.log(err)
         } else {

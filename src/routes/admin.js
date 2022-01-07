@@ -190,6 +190,16 @@ router.post("/GetSubjectList", midway.checkToken, (req, res, next) => {
     }
 });
 
+router.post("/GetSubjectForVideo",midway.checkToken,(req,res,next)=>{
+    db.executeSql("select * from subjectlist where stdid=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 router.post("/UpdateStandardList", midway.checkToken, (req, res, next) => {
     console.log(req.body)
     db.executeSql("UPDATE  `stdlist` SET stdname='" + req.body.stdname + "' WHERE id=" + req.body.id + ";", function (data, err) {
@@ -965,7 +975,7 @@ router.post("/removeTecaherList", midway.checkToken, (req, res, next) => {
         if (err) {
             console.log("Error in store.js", err);
         } else {
-            return res.json(data);
+            return res.json(data);x
         }
     });
 })
@@ -2199,7 +2209,17 @@ router.get("/GetAllSyllabusList", midway.checkToken, (req, res, next) => {
         }
     });
 });
-
+router.post("/GetSyllabusById", (req, res, next) => {
+    console.log('Syllabus',req.body);
+    db.executeSql("select * from syllabus where chapid=" + req.body.id, function (data, err) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+});
 router.post("/SaveNewTeamMembers", midway.checkToken, (req, res, next) => {
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass = salt + '' + req.body.password;
