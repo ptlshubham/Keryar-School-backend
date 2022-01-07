@@ -204,7 +204,7 @@ router.post("/GetOtpVisitorURL", (req, res, next) => {
 
 let secret = 'prnv';
 router.post('/UserLogin', (req, res, next) => {
-    restart1();
+    // restart1();
     const body = req.body;
     console.log(body);
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
