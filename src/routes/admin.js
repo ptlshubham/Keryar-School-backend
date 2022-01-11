@@ -2221,6 +2221,18 @@ router.post("/GetSyllabusById", (req, res, next) => {
         }
     })
 });
+
+router.get("/RemoveSyllabusList/:id", midway.checkToken, (req, res, next) => {
+    console.log("deleted", req.params.id);
+    db.executeSql("Delete from syllabus where id=" + req.params.id, function (data, err) {
+        if (err) {
+            console.log("Error in store.js", err);
+        } else {
+            return res.json(data);
+        }
+    });
+})
+
 router.post("/SaveNewTeamMembers", midway.checkToken, (req, res, next) => {
     var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
     var repass = salt + '' + req.body.password;
