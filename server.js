@@ -2,7 +2,7 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 const app = require("./app");
-const port=3500;
+const port=7000;
 var privateKey  = fs.readFileSync('./src/ssl/server.key').toString();
 var certificate = fs.readFileSync('./src/ssl/server.crt').toString();
 

@@ -45,7 +45,7 @@ const io = require('socket.io')(http, {
    });
  });
  
- var port = process.env.PORT || 3000;
+ var port = 7500;
   
  http.listen(port, function(){
     console.log('chat listening in http://localhost:' + port);
